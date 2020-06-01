@@ -1,9 +1,3 @@
-// Matthew Kobilas
-// 06/01/20
-/*
-	Hello world program which prints hello world,
-	followed by my name, hometown, and favorite food.
-*/
 package main
 
 import (
