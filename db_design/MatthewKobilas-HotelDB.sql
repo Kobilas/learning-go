@@ -36,8 +36,7 @@ CREATE TABLE guest (
 	guest_id INT NOT NULL AUTO_INCREMENT,
 		CONSTRAINT pk_guest
 		PRIMARY KEY (guest_id),
-    first_name VARCHAR(25) NOT NULL,
-    last_name VARCHAR(25) NOT NULL,
+    full_name VARCHAR(50) NOT NULL,
     address VARCHAR(25) NOT NULL,
     city VARCHAR(25) NOT NULL,
     /* state has 51 variants for the enum to account for Washington, DC */
