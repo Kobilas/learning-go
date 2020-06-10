@@ -47,3 +47,4 @@ INNER JOIN WorkoutGoal
 	ON Workout.WorkoutId = WorkoutGoal.WorkoutId
 INNER JOIN Goal
 	ON WorkoutGoal.GoalId = Goal.GoalId;
+
