@@ -20,47 +20,25 @@ func main() {
 	output := make(chan string)
 	var sent int = 0
 	var availableComputers = 8
-	var first = true
 	for i := 0; sent < 24; i = (i + 1) % 25 {
-		/* if availableComputers > 0 {
+		if availableComputers > 0 {
 			if tourists[i] == 0 {
 				availableComputers--
 				tourists[i] = -1
 				go useComputer(&tourists[i], i+1, output)
 				continue
 			}
-		} */
-		select {
-		case x, ok := <-output:
-			if ok {
-				fmt.Println(x)
-			} else {
-				fmt.Println("Channel closed")
-			}
-		default:
-			//fmt.Println("No value ready")
-			if availableComputers > 0 {
-				if tourists[i] == 0 {
-					availableComputers--
-					tourists[i] = -1
-					go useComputer(&tourists[i], i+1, output)
-					continue
+		}
+		for i, val := range tourists {
+			if val == 0 {
+				fmt.Println("Tourist", i+1, "is waiting for turn.")
+			} else if val == -1 {
+				fmt.Println(<-output, sent)
+				sent++
+				if availableComputers < 8 {
+					availableComputers++
 				}
 			}
-		}
-		if first {
-			for i, val := range tourists {
-				if val == 0 {
-					fmt.Println("Tourist", i+1, "is waiting for turn.")
-				} /* else if val == -1 {
-					fmt.Println(<-output, sent)
-					sent++
-					if availableComputers < 8 {
-						availableComputers++
-					}
-				} */
-			}
-			first = false
 		}
 		if sent == len(tourists) {
 			break
