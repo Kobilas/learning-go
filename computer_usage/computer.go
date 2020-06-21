@@ -8,8 +8,8 @@ import (
 
 func useComputer(tourist *int, touristIdx int, output chan string) {
 	fmt.Println("Tourist", touristIdx, "is online.")
-	var computingTime int = rand.Intn(10) + 1
-	time.Sleep(time.Duration(computingTime) * time.Second)
+	var computingTime int = rand.Intn(106) + 15
+	time.Sleep(time.Duration(computingTime/10) * time.Second)
 	*tourist = computingTime
 	output <- fmt.Sprintf("Tourist %d is done, having spent %d minutes online.", touristIdx, *tourist)
 }
@@ -20,28 +20,36 @@ func main() {
 	output := make(chan string)
 	var sent int = 0
 	var availableComputers = 8
-	for i := 0; sent < 24; i = (i + 1) % 25 {
+	var first bool = true
+	for sent < len(tourists)-1 {
 		if availableComputers > 0 {
-			if tourists[i] == 0 {
-				availableComputers--
-				tourists[i] = -1
-				go useComputer(&tourists[i], i+1, output)
-				continue
+			for j := range tourists {
+				if availableComputers > 0 {
+					if tourists[j] == 0 {
+						availableComputers--
+						tourists[j] = -1
+						go useComputer(&tourists[j], j+1, output)
+					}
+				}
 			}
 		}
-		for i, val := range tourists {
-			if val == 0 {
-				fmt.Println("Tourist", i+1, "is waiting for turn.")
-			} else if val == -1 {
-				fmt.Println(<-output, sent)
+		if first {
+			for j, val := range tourists {
+				if val == 0 {
+					fmt.Println("Tourist", j+1, "is waiting for turn.")
+				}
+			}
+			first = false
+		}
+		for _, val := range tourists {
+			if val == -1 {
+				fmt.Println(<-output)
 				sent++
 				if availableComputers < 8 {
 					availableComputers++
 				}
+				break
 			}
-		}
-		if sent == len(tourists) {
-			break
 		}
 	}
 	fmt.Println("The place is empty, let's close up and go to the beach!")
