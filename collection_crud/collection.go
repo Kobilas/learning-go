@@ -8,6 +8,7 @@ import (
 )
 
 type book struct {
+	id             int
 	title          string
 	author         string
 	pages          int
@@ -59,6 +60,7 @@ func main() {
 	var inp string
 	var f *os.File
 	var err error
+	var highest int
 	f, err = os.Open("collection.txt")
 	if err != nil {
 		err = nil
@@ -66,6 +68,12 @@ func main() {
 		if err != nil {
 			fmt.Println("Error creating file after attempting to open")
 		}
+	}
+	scanner := bufio.NewScanner(f)
+	scanner.Split(bufio.ScanLines)
+	for scanner.Scan() {
+		tmp := scanner.Text()
+
 	}
 	for {
 		fmt.Println()
@@ -79,6 +87,7 @@ func main() {
 		fmt.Scan(&inp)
 		switch inp {
 		case "1":
+			create(f)
 		case "2":
 			read(f)
 		case "3":
