@@ -12,8 +12,6 @@ tax = map[string]float64{
 //file name for orders is Orders_MMDDYYYY.txt.
 //Example, January 1st, 2017 = Orders_01012017.txt
 
-//Remove an order
-
 
 
 //Edit an order method
