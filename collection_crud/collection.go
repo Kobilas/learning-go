@@ -41,21 +41,7 @@ func setCurrentIDAndGetLength(f *os.File) {
 	birdCount = count
 }
 
-func create(f *os.File) {
-	var inp string
-	var name, scientificName, region, diet string
-	var wingspan int
-	fmt.Print("Enter name: ")
-	fmt.Scan(&name)
-	fmt.Print("Enter scientific name: ")
-	fmt.Scan(&scientificName)
-	fmt.Print("Enter wingspan: ")
-	fmt.Scan(&inp)
-	wingspan, _ = strconv.Atoi(inp)
-	fmt.Print("Enter region: ")
-	fmt.Scan(&region)
-	fmt.Print("Enter diet: ")
-	fmt.Scan(&diet)
+func Create(f *os.File, name, scientificName, region, diet string, wingspan int) {
 	tmp := bird{birdID, name, scientificName, wingspan, region, diet}
 	bw := bufio.NewWriter(f)
 	bw.WriteString(tmp.toString())
@@ -64,7 +50,7 @@ func create(f *os.File) {
 	birdCount++
 }
 
-func read(f *os.File) {
+func Read(f *os.File) {
 	f.Seek(0, 0)
 	scanner := bufio.NewScanner(f)
 	scanner.Split(bufio.ScanLines)
@@ -73,45 +59,31 @@ func read(f *os.File) {
 	}
 }
 
-func update(f *os.File) {
-	var idToUpdate string
+func Update(f *os.File, id, name, scientificName, wingspan, region, diet string) {
 	lines := make([]string, birdCount)
-	fmt.Print("Enter ID of bird to update: ")
-	fmt.Scan(&idToUpdate)
 	f.Seek(0, 0)
 	scanner := bufio.NewScanner(f)
 	scanner.Split(bufio.ScanLines)
 	for scanner.Scan() {
 		line := strings.Split(scanner.Text(), ",")
-		if line[0] != idToUpdate {
+		if line[0] != id {
 			lines = append(lines, strings.Join(line, ",")+"\n")
 		} else {
 			fmt.Println("Updating", strings.Join(line, ", "))
-			var tmp string
-			fmt.Print("Update name? (" + line[1] + ") ")
-			fmt.Scan(&tmp)
-			if tmp != "" {
-				line[1] = tmp
+			if name != "" {
+				line[1] = name
 			}
-			fmt.Print("Update scientific name? (" + line[2] + ") ")
-			fmt.Scan(&tmp)
-			if tmp != "" {
-				line[2] = tmp
+			if scientificName != "" {
+				line[2] = scientificName
 			}
-			fmt.Print("Update wingspan? (" + line[3] + ") ")
-			fmt.Scan(&tmp)
-			if tmp != "" {
-				line[3] = tmp
+			if wingspan != "" {
+				line[3] = wingspan
 			}
-			fmt.Print("Update region? (" + line[4] + ") ")
-			fmt.Scan(&tmp)
-			if tmp != "" {
-				line[4] = tmp
+			if region != "" {
+				line[4] = region
 			}
-			fmt.Print("Update diet? (" + line[5] + ") ")
-			fmt.Scan(&tmp)
-			if tmp != "" {
-				line[5] = tmp
+			if diet != "" {
+				line[5] = diet
 			}
 			lines = append(lines, strings.Join(line, ",")+"\n")
 			fmt.Print("Updated to", strings.Join(line, ", "))
@@ -120,17 +92,14 @@ func update(f *os.File) {
 	rewrite(f, lines)
 }
 
-func destroy(f *os.File) {
-	var idToDelete string
+func Destroy(f *os.File, id string) {
 	lines := make([]string, birdCount-1)
-	fmt.Print("Enter ID of bird to delete: ")
-	fmt.Scan(&idToDelete)
 	f.Seek(0, 0)
 	scanner := bufio.NewScanner(f)
 	scanner.Split(bufio.ScanLines)
 	for scanner.Scan() {
 		line := strings.Split(scanner.Text(), ",")
-		if line[0] != idToDelete {
+		if line[0] != id {
 			lines = append(lines, strings.Join(line, ",")+"\n")
 		} else {
 			fmt.Println("Deleting", strings.Join(line, ", "))
@@ -172,13 +141,41 @@ func main() {
 		fmt.Scan(&inp)
 		switch inp {
 		case "1":
-			create(f)
+			var name, scientificName, region, diet string
+			var wingspan int
+			fmt.Print("Enter name: ")
+			fmt.Scan(&name)
+			fmt.Print("Enter scientific name: ")
+			fmt.Scan(&scientificName)
+			fmt.Print("Enter wingspan: ")
+			fmt.Scan(&inp)
+			wingspan, _ = strconv.Atoi(inp)
+			fmt.Print("Enter region: ")
+			fmt.Scan(&region)
+			fmt.Print("Enter diet: ")
+			fmt.Scan(&diet)
+			Create(f, name, scientificName, region, diet, wingspan)
 		case "2":
-			read(f)
+			Read(f)
 		case "3":
-			update(f)
+			fmt.Print("Enter ID of bird to delete: ")
+			fmt.Scan(&inp)
+			var name, scientificName, wingspan, region, diet string
+			fmt.Print("Update name? ")
+			fmt.Scan(&name)
+			fmt.Print("Update scientific name? ")
+			fmt.Scan(&scientificName)
+			fmt.Print("Update wingspan? ")
+			fmt.Scan(&wingspan)
+			fmt.Print("Update region? ")
+			fmt.Scan(&region)
+			fmt.Print("Update diet? ")
+			fmt.Scan(&diet)
+			Update(f, inp, name, scientificName, wingspan, region, diet)
 		case "4":
-			destroy(f)
+			fmt.Print("Enter ID of bird to delete: ")
+			fmt.Scan(&inp)
+			Destroy(f, inp)
 		case "q":
 			os.Exit(0)
 		}
