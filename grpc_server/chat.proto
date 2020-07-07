@@ -1,0 +1,18 @@
+// define syntax to be used in the file
+syntax = "proto3";
+// define name of package that we want to create
+package chat;
+// identify location of where new service will be hosted
+option go_package = ".;chat";
+
+// define message type named Message
+message Message {
+    string body = 1;
+}
+
+// define service named ChatService
+service ChatService {
+    // calls rpc (remote procedure call) of SayHello
+    // SayHello takes input as Message and returns Message
+    rpc SayHello(Message) returns (Message) {}
+}
